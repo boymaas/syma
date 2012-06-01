@@ -1,6 +1,8 @@
 # Syma
 
-TODO: Write a gem description
+     Syma.configure do |c|
+       c.ui_driver_class CStore::UIDriver
+     end
 
 ## Installation
 

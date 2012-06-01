@@ -1,0 +1,2 @@
+class MentalModel < Hash; end
+

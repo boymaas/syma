@@ -13,14 +13,60 @@ class Syma
         
       end
     end
-    context "#component_path" do
-      it "raises" do
-        expect { subject.component_path }.to raise_error
+
+    context ".ui_component" do
+      it "is present, tested at module" do
+        TmpClass = Class.new(UIComponent) do
+          ui_component :label, :Class 
+        end
+        
       end
     end
-    context "#component_selector" do
-      it "raises" do
-        expect { subject.component_selector }.to raise_error
+
+    context ".component_{path,selector}" do
+      context "given: configured using scalars" do
+        let (:ui_component) do
+          Class.new(UIComponent) do
+            component_path     :a_component_path 
+            component_selector :a_component_selector 
+          end
+        end
+
+        subject { ui_component.new(config) }
+
+        specify { subject.component_path.should == :a_component_path }
+        specify { subject.component_selector.should == :a_component_selector }
+
+      end
+      context "given: configured using blocks" do
+        let (:ui_component) do
+          Class.new(UIComponent) do
+            component_path     { :a_component_path }
+            component_selector { :a_component_selector } 
+          end
+        end
+
+        subject { ui_component.new(config) }
+
+        specify { subject.component_path.should == :a_component_path }
+        specify { subject.component_selector.should == :a_component_selector }
+      end
+      context "given: configured using blocks" do
+        let (:ui_component) do
+          Class.new(UIComponent) do
+            component_path     { an_instance_method }
+            component_selector { an_instance_method } 
+
+            def an_instance_method
+              :an_instance_method
+            end
+          end
+        end
+
+        subject { ui_component.new(config) }
+
+        specify { subject.component_path.should == :an_instance_method }
+        specify { subject.component_selector.should == :an_instance_method }
       end
     end
 
@@ -37,7 +83,7 @@ class Syma
 
     context "#method_missing" do
       before do
-          subject.stub(:component_selector => :component_selector)
+        subject.stub(:component_selector => :component_selector)
       end
       context "world responds to method" do
         before do

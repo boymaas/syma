@@ -1,15 +1,18 @@
+require 'syma/ui_component_factory_method'
+
 class Syma
+
   class UIDriver
+    attr_reader :configuration
+
+    include UiComponentFactoryMethod
+
     def initialize(configuration)
       @configuration = configuration 
     end
 
-    class << self
-      def ui_component label, component_class
-        define_method(label) do
-          component_class.new(@configuration)
-        end
-      end
+    def go_to ui_component
+      configuration.world.visit ui_component.component_path
     end
   end
 end

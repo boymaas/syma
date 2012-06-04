@@ -12,10 +12,6 @@ describe Syma do
       subject.configuration.ui_driver_class == :AClass
       subject.configuration.world == :AWorld
     end
-    it "should be an unique instance" do
-      subject.configuration.object_id.should_not == 
-        described_class.configuration.object_id
-    end
   end
 
   context "#configuration" do

@@ -1,7 +1,6 @@
 require 'syma/ui_component_factory_method'
 
 class Syma
-
   class UIDriver
     attr_reader :configuration
 

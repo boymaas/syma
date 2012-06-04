@@ -1,7 +1,6 @@
 require 'syma/ui_component_factory_method'
 require 'syma/attr_initializer'
 
-
 class Syma
   class UIComponent 
     attr_reader :world, :configuration

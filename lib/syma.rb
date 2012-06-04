@@ -17,7 +17,7 @@ class Syma
   attr_reader :configuration
 
   def initialize(configuration = self.class.configuration)
-    @configuration = configuration.dup    
+    @configuration = configuration
     @configuration.mental_model MentalModel.new
   end
 

@@ -1,22 +1,32 @@
 require 'syma/ui_component_factory_method'
 
+# module AttrInitializer
+#   def included(base)
+#     base.extend(ClassMethods)
+#   end
+
+#   module ClassMethods
+    
+#   end
+# end
+
 class Syma
   class UIComponent 
-    attr_reader :world, :configuration, :component_path, :component_selector
+    attr_reader :world, :configuration
 
     include UiComponentFactoryMethod
+    # include AttrInitializer
+
+    # attr_initializer :component_path
+    # attr_initializer :component_selector
 
     class << self
       def component_path(path=nil, &block)
-        path     && @component_path = path
-        block    && @component_path = block
-        @component_path
+        @component_path = path || block || @component_path
       end
 
       def component_selector(selector=nil, &block)
-        selector && @component_selector = selector
-        block    && @component_selector = block
-        @component_selector
+        @component_selector = selector || block || @component_selector
       end
     end
 

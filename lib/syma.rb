@@ -26,7 +26,6 @@ class Syma
   end
 
   class Configuration
-
     def ui_driver_class driver_class=:no_driver_class
       unless driver_class == :no_driver_class
         @ui_driver_class = driver_class

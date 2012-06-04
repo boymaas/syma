@@ -23,53 +23,6 @@ class Syma
       end
     end
 
-    context ".component_{path,selector}" do
-      context "given: configured using scalars" do
-        let (:ui_component) do
-          Class.new(UIComponent) do
-            component_path     :a_component_path 
-            component_selector :a_component_selector 
-          end
-        end
-
-        subject { ui_component.new(config) }
-
-        specify { subject.component_path.should == :a_component_path }
-        specify { subject.component_selector.should == :a_component_selector }
-
-      end
-      context "given: configured using blocks" do
-        let (:ui_component) do
-          Class.new(UIComponent) do
-            component_path     { :a_component_path }
-            component_selector { :a_component_selector } 
-          end
-        end
-
-        subject { ui_component.new(config) }
-
-        specify { subject.component_path.should == :a_component_path }
-        specify { subject.component_selector.should == :a_component_selector }
-      end
-      context "given: configured using blocks" do
-        let (:ui_component) do
-          Class.new(UIComponent) do
-            component_path     { an_instance_method }
-            component_selector { an_instance_method } 
-
-            def an_instance_method
-              :an_instance_method
-            end
-          end
-        end
-
-        subject { ui_component.new(config) }
-
-        specify { subject.component_path.should == :an_instance_method }
-        specify { subject.component_selector.should == :an_instance_method }
-      end
-    end
-
     context "#visible?" do
       it "delegates to world find" do
         subject.stub(:component_selector => :component_selector)

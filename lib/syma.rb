@@ -1,3 +1,5 @@
+require "syma/ui_driver"
+require "syma/ui_component"
 require "syma/mental_model"
 
 class Syma
@@ -19,8 +21,8 @@ class Syma
     @configuration.mental_model MentalModel.new
   end
 
-  def ui
-    @ui ||= configuration.ui_driver_class.new(configuration)
+  def ui_driver
+    @ui_driver ||= configuration.ui_driver_class.new(configuration)
   end
 
   class Configuration

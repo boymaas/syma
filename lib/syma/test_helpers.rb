@@ -7,6 +7,10 @@ class Syma
     def ui
       syma.ui_driver
     end
+
+    def given
+      syma.given_driver
+    end
   end
 end
 

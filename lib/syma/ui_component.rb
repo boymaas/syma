@@ -1,11 +1,15 @@
 require 'syma/ui_component_factory_method'
+require 'syma/ui_world_forwardable'
+require 'syma/ui_helpers'
 require 'syma/attr_initializer'
 
 class Syma
   class UIComponent 
-    attr_reader :world, :configuration
+    attr_reader :configuration
 
     include UiComponentFactoryMethod
+    include UiHelpers
+    include UiWorldForwardable
     include AttrInitializer
 
     attr_initializer :component_path
@@ -13,23 +17,29 @@ class Syma
 
     def initialize(configuration)
       @configuration = configuration
-      @world = @configuration.world
     end
 
+    def mental_model
+      configuration.mental_model
+    end
 
     def visible?
       !!world.find(component_selector)
     end
 
-    # Delegate all missing methods to
-    # world in a capybara within selector
-    def method_missing(m,*a)
-      if world.respond_to?(m)
-        world.within(component_selector) do
-          return world.send(m, *a)
+  end
+end
+
+class Syma
+  class UIComponent
+    class << self
+      def load_and_module_eval_relative glob
+        dirname = File.dirname(caller[0])
+        Dir["#{dirname}/#{glob}"].each do |ui_component|
+          module_eval File.read(ui_component), ui_component, 1
         end
       end
-      super
     end
   end
 end
+

@@ -6,6 +6,7 @@ class Syma
     before do
       Syma.configure do |c|
         c.ui_driver_class UIDriver 
+        c.given_driver_class GivenDriver 
       end
     end
     let(:enclosing_class) do
@@ -25,6 +26,12 @@ class Syma
       it "returns a memoized ui_driver" do
         enclosing_class.ui.should be_an(UIDriver)
         enclosing_class.ui.object_id == enclosing_class.ui.object_id
+      end
+    end
+    context "#given" do
+      it "returns a memoized given_driver" do
+        enclosing_class.given.should be_an(GivenDriver)
+        enclosing_class.given.object_id == enclosing_class.given.object_id
       end
     end
 

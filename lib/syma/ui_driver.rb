@@ -1,17 +1,12 @@
+require 'syma/driver'
 require 'syma/ui_component_factory_method'
+require 'syma/ui_helpers'
+require 'syma/ui_world_forwardable'
 
 class Syma
-  class UIDriver
-    attr_reader :configuration
-
+  class UIDriver < Driver
     include UiComponentFactoryMethod
-
-    def initialize(configuration)
-      @configuration = configuration 
-    end
-
-    def go_to ui_component
-      configuration.world.visit ui_component.component_path
-    end
+    include UiHelpers
+    include UiWorldForwardable
   end
 end

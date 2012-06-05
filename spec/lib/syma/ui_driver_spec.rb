@@ -18,9 +18,5 @@ class Syma
       end
     end
 
-    contexy "#go_to" do
-      
-    end
-
   end
 end

@@ -9,6 +9,11 @@ module SinatraApp
     enable :sessions
     disable :show_exceptions
 
+    def self.clear
+      @@users = {}
+      @@widgets = []
+    end
+
     def self.create_user(user_data)
       @@users ||= {}
       @@users[user_data[:email]] = user_data

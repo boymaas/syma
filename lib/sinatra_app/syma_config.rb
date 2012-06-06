@@ -18,13 +18,8 @@ module SinatraApp
   end
 
   class SignInScreen < Syma::UIComponent
-    def component_path
-      '/session/new'
-    end
-
-    def component_selector
-      '#sign_in_screen'
-    end
+    component_path '/session/new'
+    component_selector '#sign_in_screen'
 
     def sign_in(user_data)
       in_world_within do
@@ -36,13 +31,8 @@ module SinatraApp
   end
 
   class WidgetList < Syma::UIComponent
-    def component_path
-      '/widgets'
-    end
-
-    def component_selector
-      '#widget_list'
-    end
+    component_path '/widgets'
+    component_selector '#widget_list'
 
     def widgets
       w.all('.widget_summary').map do |el|
@@ -74,9 +64,7 @@ module SinatraApp
   end
 
   class WidgetForm < Syma::UIComponent
-    def component_selector
-      '#widget_form'
-    end
+    component_selector '#widget_form'
 
     def submit(widget_data)
       w.fill_in 'Name:', :with => widget_data[:name]
@@ -101,7 +89,7 @@ module SinatraApp
     def create_new_widget(name, attributes = {})
       raise  "Widget list is not visible!" unless widget_list.visible?
       widget_list.choose_to_create_new_widget
-      widget_form.submit('name' => 'My Widget')
+      widget_form.submit(:name => 'My Widget')
       mental_model.widgets[name] = widget_list.last_widget_created
     end
 

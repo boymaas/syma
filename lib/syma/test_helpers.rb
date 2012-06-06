@@ -11,6 +11,10 @@ class Syma
     def given
       syma.given_driver
     end
+
+    def mental_model
+      syma.mental_model
+    end
   end
 end
 

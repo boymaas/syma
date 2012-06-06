@@ -1,8 +1,11 @@
 source 'https://rubygems.org'
 
-gem 'bundler'
+gem 'patron'
 
 group :development, :test do
+  gem 'sinatra'
+  gem 'capybara'
+  gem 'json_pure'
   gem 'rspec'
   gem 'pry'
   gem 'ruby-debug'

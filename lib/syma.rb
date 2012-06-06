@@ -30,6 +30,10 @@ class Syma
     @given_driver ||= configuration.instantiate_given_driver_class
   end
 
+  def mental_model
+    @mental_model ||= configuration.mental_model
+  end
+
 
   class Configuration
     def initialize

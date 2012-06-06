@@ -2,20 +2,7 @@ require 'syma'
 
 module SinatraApp
 
-  class GivenDriver < Syma::GivenDriver
-
-    def a_user(name)
-      user = {:email => 'bob@example.com', :password => '12345'}
-      result = SinatraApp::Simple.create_user(user)
-      mental_model.users[name] = result
-    end
-
-    def a_widget(name, attributes = {})
-      widget = {:name => 'Foo'}.merge(attributes)
-      result = SinatraApp::Simple.create_widget(widget)
-      mental_model.widgets[name] = result
-    end
-  end
+  ## SignInSreen and WidgetList interface componentes
 
   class SignInScreen < Syma::UIComponent
     component_path '/session/new'
@@ -30,9 +17,22 @@ module SinatraApp
     end
   end
 
-  class WidgetList < Syma::UIComponent
+  # WidgetScreen and the form on this screen
+
+  class WidgetForm < Syma::UIComponent
+    component_selector '#widget_form'
+
+    def submit(widget_data)
+      w.fill_in 'Name:', :with => widget_data[:name]
+      w.click_on 'Save'
+    end
+  end
+
+  class WidgetScreen < Syma::UIComponent
     component_path '/widgets'
     component_selector '#widget_list'
+
+    ui_component :form, WidgetForm
 
     def widgets
       w.all('.widget_summary').map do |el|
@@ -63,39 +63,47 @@ module SinatraApp
     end
   end
 
-  class WidgetForm < Syma::UIComponent
-    component_selector '#widget_form'
 
-    def submit(widget_data)
-      w.fill_in 'Name:', :with => widget_data[:name]
-      w.click_on 'Save'
+  # Drivers
+
+  class GivenDriver < Syma::GivenDriver
+    def a_user(name)
+      user = {:email => 'bob@example.com', :password => '12345'}
+      result = SinatraApp::Simple.create_user(user)
+      mental_model.users[name] = result
+    end
+
+    def a_widget(name, attributes = {})
+      widget = {:name => 'Foo'}.merge(attributes)
+      result = SinatraApp::Simple.create_widget(widget)
+      mental_model.widgets[name] = result
     end
   end
 
+
   class UIDriver < Syma::UIDriver
     ui_component :sign_in_screen, SignInScreen
-    ui_component :widget_list, WidgetList
-    ui_component :widget_form, WidgetForm
+    ui_component :widget_screen, WidgetScreen
 
     def sign_in(name)
       go_to sign_in_screen
       sign_in_screen.sign_in(mental_model.users[name])
     end
 
-    def view_widget_list
-      go_to widget_list
+    def view_widget_screen
+      go_to widget_screen
     end
 
     def create_new_widget(name, attributes = {})
-      raise  "Widget list is not visible!" unless widget_list.visible?
-      widget_list.choose_to_create_new_widget
-      widget_form.submit(:name => 'My Widget')
-      mental_model.widgets[name] = widget_list.last_widget_created
+      raise  "Widget list is not visible!" unless widget_screen.visible?
+      widget_screen.choose_to_create_new_widget
+      widget_screen.form.submit(:name => 'My Widget')
+      mental_model.widgets[name] = widget_screen.last_widget_created
     end
 
     def delete_widget(name)
-      raise  "Widget list is not visible!" unless widget_list.visible?
-      widget_list.choose_to_delete_widget(mental_model.widgets.delete(name))
+      raise  "Widget list is not visible!" unless widget_screen.visible?
+      widget_screen.choose_to_delete_widget(mental_model.widgets.delete(name))
     end
   end
 end

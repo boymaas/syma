@@ -23,8 +23,8 @@ module SinatraApp
     component_selector '#widget_form'
 
     def submit(widget_data)
-      w.fill_in 'Name:', :with => widget_data[:name]
-      w.click_on 'Save'
+      fill_in 'Name:', :with => widget_data[:name]
+      click_on 'Save'
     end
   end
 
@@ -35,22 +35,22 @@ module SinatraApp
     ui_component :form, WidgetForm
 
     def widgets
-      w.all('.widget_summary').map do |el|
+      all('.widget_summary').map do |el|
         extract_widget_data(el)
       end
     end
 
     def last_widget_created
-      element = w.find('.last_widget.created')
+      element = find('.last_widget.created')
       extract_widget_data(element)
     end
 
     def choose_to_create_new_widget
-      w.click_on 'New Widget'
+      click_on 'New Widget'
     end
 
     def choose_to_delete_widget(widget_data)
-      w.find("#delete_#{widget_data[:id]}").click_button('Delete')
+      find("#delete_#{widget_data[:id]}").click_button('Delete')
     end
 
     private

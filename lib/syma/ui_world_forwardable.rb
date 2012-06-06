@@ -6,12 +6,6 @@ class Syma
       configuration.world
     end
 
-    def limited_world
-      @limited_world ||= LimitedWorld.new(world, self.component_selector)
-    end
-
-    alias :w :limited_world
-
     def in_world &block
       if block.arity == 1
         block.call(world)
@@ -25,17 +19,17 @@ class Syma
         in_world(&block)
       end
     end
+
+    # Delegate all missing methods to
+    # world in a capybara within selector
+    def method_missing(m,*a)
+      if world.respond_to?(m)
+        world.within(component_selector) do
+          return world.send(m, *a)
+        end
+      end
+      super
+    end
   end
 
-  class LimitedWorld < BasicObject
-    def initialize(world, selector)
-      @world = world 
-      @selector = selector
-    end
-    def method_missing(m, *a)
-      @world.within(@selector) do
-        @world.send(m, *a)
-      end
-    end
-  end
 end

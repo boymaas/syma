@@ -27,6 +27,7 @@ module SinatraApp
       ui.sign_in(:bob)
     end
 
+
     context "/widgets" do
       before do
         ui.view_widget_screen

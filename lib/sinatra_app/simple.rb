@@ -9,6 +9,8 @@ module SinatraApp
     enable :sessions
     disable :show_exceptions
 
+    # Define state of SimpleApp
+
     def self.clear
       @@users = {}
       @@widgets = []
@@ -16,19 +18,46 @@ module SinatraApp
 
     def self.create_user(user_data)
       @@users ||= {}
-      @@users[user_data[:email]] = user_data
+      @@users[user_data.fetch(:email)] = user_data
     end
 
     def self.create_widget( widget_data )
       @@widgets ||= []
       widget_data[:id] = `uuidgen`.strip
       @@widgets << widget_data
-      @@last_widget_created = widget_data
+      widget_data
     end
 
+    def self.widgets
+      @@widgets ||= []
+    end
+
+    def self.users 
+      @@users ||= {}
+    end
+
+    def widgets
+      self.class.widgets
+    end
+
+    def users 
+      self.class.users
+    end
+
+    # Markup helpers
+
+    def markaby &block
+      Markaby::Builder.new(&block).to_s
+    end
+
+    # Sinatra actions
+
     post '/session' do
-      user = @@users[params[:email]]
-      if user && user[:password] == params[:password]
+      email    = params.fetch('email', :NoEmail)
+      password = params.fetch('password', :NoPassword)
+      user = users.fetch(email, false)
+
+      if user && user.fetch(:password) == password
         session[:logged_in] = true
         status 200
         body 'You are logged in!'
@@ -40,136 +69,79 @@ module SinatraApp
     end
 
     get '/session/new' do
-      body <<-EOF
-          <html>
-            <head>
-              <title>Sign In</title>
-            </head>
-            <body>
-              <div id="sign_in_screen">
-                <form action="/session" method="POST">
-                  <label for="email">Email:</label>
-                  <input id="email" name="email" type="text" />
-
-                  <label for="password">Password:</label>
-                  <input id="password" name="password" type="password" />
-
-                  <input type="submit" value="Sign In" />
-                </form>
-              </div>
-            </body>
-          </html>
-      EOF
+      haml <<-EOS.gsub(/^\s{8}/,'')
+        %html
+          %head
+            %title Sign In
+          %body
+            %div#sign_in_screen
+              %form{:action=>'/session', :method=>'POST'}
+                %label{:for=>'email'} Email:
+                %input.email{:id=>'email', :name=>'email', :type=>'text'}
+                %label{:for=>'password'} Password:
+                %input.password{:id=>'password', :name=>'password', :type=>'text'}
+                %button Sign In
+      EOS
     end
 
     post '/widgets' do
-      @@widgets ||= []
-      widget_data = if request.media_type == 'application/json'
-                      parse_json_req_body
-                    else
-                      {:name => params['name']}
-                    end
+      widget_data = {:name => params.fetch('name')}
       widget_data[:id] = `uuidgen`.strip
-      @@widgets << widget_data
-      @@last_widget_created = widget_data
-      if request.accept? 'text/html'
-        redirect to('/widgets')
-      elsif request.accept? 'application/json'
-        status 201
-        headers 'Content-Type' => 'application/json'
-        body widget_data.to_json
-      else
-        redirect to('/widgets')
-      end
+      widgets << widget_data
+      redirect to('/widgets')
     end
 
     post '/widgets/:widget_id' do
-      @@widgets.delete_if do |w|
-        w[:id] == params['widget_id']
-      end
+      widget_id = params.fetch('widget_id')
+      widgets.delete_if {|w| w[:id] == widget_id }
       redirect to('/widgets')
     end
 
     get '/widgets/new' do
-      body <<-EOF
-            <html>
-              <head>
-                <title>New Widget</title>
-              </head>
-              <body>
-                <div id="widget_form">
-                  <form action="/widgets" method="POST">
-                    <label for="name">Name:</label>
-                    <input id="name" name="name" type="text" />
-
-                    <input type="submit" value="Save" />
-                  </form>
-                </div>
-              </body>
-            </html>
-      EOF
+      haml <<-EOS.gsub(/^\s{8}/,'')
+        %html
+          %head
+            %title New Widget
+          %body
+            %div#widget_form
+              %form{:action=>'/widgets', :method=>'POST'}
+                %label{:for=>'name'} Name:
+                %input.name{:id=>'name', :name=>'name', :type=>'text'}
+                %button Save
+      EOS
     end
 
-
     get '/widgets' do
-      raise "Not logged in!" unless session[:logged_in]
-      @@widgets ||= []
-      last_widget_created, @@last_widget_created = @@last_widget_created, nil
-      content = ''
-      content << <<-EOF
-          <html>
-            <head>
-              <title>Widgets</title>
-            </head>
-            <body>
-              <div id="widget_list">
-      EOF
-      if last_widget_created
-        content << <<-EOF
-                  <div class="last_widget created">
-                    <span class="id">#{last_widget_created[:id]}</span>
-                    <span class="name">#{last_widget_created[:name]}</span>
-                  </div>
-        EOF
-      end
-      content << <<-EOF
-                <ul>
-      EOF
-      @@widgets.each_with_index do |w,i|
-        content << <<-EOF
-                  <li class="widget_summary" id="ws_#{i}">
-                    <span class="id">#{w[:id]}</span>
-                    <span class="name">#{w[:name]}</span>
-                    <form id="delete_#{w[:id]}" action="/widgets/#{w[:id]}" method="POST">
-                      <button type="submit" value="Delete" />
-                    </form>
-                  </li>
-        EOF
-      end
-      content << <<-EOF
-                </ul>
-                <a href="/widgets/new">New Widget</a>
-              </div>
-            </body>
-          </html>
-      EOF
-      body content
+      raise "Not logged in!" unless session.fetch('logged_in', false)
+
+      haml <<-EOS.gsub(/^\s{8}/,''), :locals => {:widgets => widgets}
+        %html
+          %head
+            %title New Widget
+          %body
+            - if widgets
+              %div#widget_list
+                %div.last_widget.created
+                  %span.id= widgets.last.fetch(:id)
+                  %span.name= widgets.last.fetch(:name)
+                %ul
+                  - widgets.each_with_index do |w,i|
+                    %li.widget_summary{:id => "ws_%d" % i}
+                      %span.id= w.fetch(:id)
+                      %span.name= w.fetch(:name)
+                      - action = "/widgets/%s" % w.fetch(:id)
+                      - id = "delete_%s" % w.fetch(:id)
+                      %form{:action=>action, :method=>'POST', :id=> id}
+                        %button Delete
+                %a{:href=>'/widgets/new'} New Widget
+      EOS
     end
 
     error do
-      e = request.env['sinatra.error']
-      body << <<-EOF
-          <html>
-            <head>
-              <title>Internal Server Error</title>
-            </head>
-            <body>
-              <pre>
-      #{e.to_s}\n#{e.backtrace.join("\n")}
-              </pre>
-            </body>
-          </html>
-      EOF
+      e = request.env.fetch('sinatra.error')
+      raise e
     end
   end
+
 end
+

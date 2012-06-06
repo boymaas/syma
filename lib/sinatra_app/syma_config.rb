@@ -73,7 +73,7 @@ module SinatraApp
     end
 
     def choose_to_delete_widget(widget_data)
-      find("#delete_#{widget_data[:id]}").click_button('Delete')
+      find("#delete_#{widget_data.fetch(:id)}").click_button('Delete')
     end
 
     private

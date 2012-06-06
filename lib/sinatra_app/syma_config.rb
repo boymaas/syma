@@ -28,16 +28,39 @@ module SinatraApp
     end
   end
 
+  class WidgetElement < Syma::UIComponent
+    def initialize(conf, id)
+      @component_selector = id
+      super(conf)
+    end
+
+    def id
+      find('.id').text
+    end
+
+    def name
+      find('.name').text
+    end
+  end
+
   class WidgetScreen < Syma::UIComponent
     component_path '/widgets'
     component_selector '#widget_list'
 
     ui_component :form, WidgetForm
 
-    def widgets
+    def widgets_data
       all('.widget_summary').map do |el|
         extract_widget_data(el)
       end
+    end
+
+    def widgets
+      w = []
+      all('.widget_summary').each_with_index do |el,i|
+        w << WidgetElement.new(configuration, "#ws_#{i}")
+      end
+      w
     end
 
     def last_widget_created

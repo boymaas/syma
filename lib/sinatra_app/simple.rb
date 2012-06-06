@@ -135,9 +135,9 @@ module SinatraApp
       content << <<-EOF
                 <ul>
       EOF
-      @@widgets.each do |w|
+      @@widgets.each_with_index do |w,i|
         content << <<-EOF
-                  <li class="widget_summary">
+                  <li class="widget_summary" id="ws_#{i}">
                     <span class="id">#{w[:id]}</span>
                     <span class="name">#{w[:name]}</span>
                     <form id="delete_#{w[:id]}" action="/widgets/#{w[:id]}" method="POST">

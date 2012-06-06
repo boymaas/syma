@@ -33,15 +33,20 @@ module SinatraApp
       end
       context "given: no mutations" do
         it "widget list contain widget_a and widget_b" do
-          ui.widget_screen.widgets.should == mental_model.widgets.values_at(:widget_a, :widget_b)
+          ui.widget_screen.widgets_data.should == mental_model.widgets.values_at(:widget_a, :widget_b)
         end
         it "after creating a new widget, it is visible in the list" do
           ui.create_new_widget(:widget_c, :name => 'Bar')
-          ui.widget_screen.widgets.should == mental_model.widgets.values_at(:widget_a, :widget_b, :widget_c)
+          ui.widget_screen.widgets_data.should == mental_model.widgets.values_at(:widget_a, :widget_b, :widget_c)
         end
         it "after deleteing a widget, it should be removed from the list" do
           ui.delete_widget(:widget_b)
-          ui.widget_screen.widgets.should == mental_model.widgets.values_at(:widget_a)
+          ui.widget_screen.widgets_data.should == mental_model.widgets.values_at(:widget_a)
+        end
+        it "returns the widgets as components" do 
+          widget_components = ui.widget_screen.widgets
+          widget_components.map {|wc| {:id => wc.id, :name => wc.name} }.
+            should == mental_model.widgets.values_at(:widget_a, :widget_b)
         end
       end
     end

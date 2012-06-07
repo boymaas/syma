@@ -8,12 +8,14 @@ module SinatraApp
     component_path '/session/new'
     component_selector '#sign_in_screen'
 
+    def_text_field_accessor      :email    , :selector => 'input#email'
+    def_password_field_accessor  :password , :selector => 'input#password'
+    def_submitter                :submit   , :selector => 'Sign In'
+
     def sign_in(user_data)
-      in_world_within do
-        fill_in 'Email:', :with => user_data[:email]
-        fill_in 'Password:', :with => user_data[:password]
-        click_button 'Sign In'
-      end
+      email    user_data[:email]
+      password user_data[:password]
+      submit
     end
   end
 
@@ -22,9 +24,12 @@ module SinatraApp
   class WidgetForm < Syma::UIComponent
     component_selector '#widget_form'
 
+    def_text_field_accessor :name, :selector => 'input#name'
+    def_submitter           :press_save, :selector => 'Save'
+
     def submit(widget_data)
-      fill_in 'Name:', :with => widget_data[:name]
-      click_on 'Save'
+     fill_in 'Name:', :with => widget_data[:name]
+     press_save
     end
   end
 
@@ -34,13 +39,8 @@ module SinatraApp
       super(conf)
     end
 
-    def id
-      find('.id').text
-    end
-
-    def name
-      find('.name').text
-    end
+    def_text_lookup_reader :id, :selector => '.id'
+    def_text_lookup_reader :name, :selector => '.name'
   end
 
   class WidgetScreen < Syma::UIComponent

@@ -8,14 +8,14 @@ module SinatraApp
     component_path '/session/new'
     component_selector '#sign_in_screen'
 
-    def_text_field_accessor      :email    , :selector => 'input#email'
-    def_password_field_accessor  :password , :selector => 'input#password'
-    def_submitter                :submit   , :selector => 'Sign In'
+    def_text_field_accessor      :email, :selector => 'input#email'
+    def_password_field_accessor  :password, :selector => 'input#password'
+    def_submitter                :press_sign_in, :selector => 'Sign In'
 
     def sign_in(user_data)
       email    user_data[:email]
       password user_data[:password]
-      submit
+      press_sign_in
     end
   end
 
@@ -27,7 +27,7 @@ module SinatraApp
     def_text_field_accessor :name, :selector => 'input#name'
     def_submitter           :press_save, :selector => 'Save'
 
-    def submit(widget_data)
+    def save_widget(widget_data)
      fill_in 'Name:', :with => widget_data[:name]
      press_save
     end
@@ -120,7 +120,7 @@ module SinatraApp
     def create_new_widget(name, attributes = {})
       raise  "Widget list is not visible!" unless widget_screen.visible?
       widget_screen.choose_to_create_new_widget
-      widget_screen.form.submit(:name => 'My Widget')
+      widget_screen.form.save_widget(:name => 'My Widget')
       mental_model.widgets[name] = widget_screen.last_widget_created
     end
 

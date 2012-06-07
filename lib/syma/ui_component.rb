@@ -16,7 +16,7 @@ class Syma
     attr_initializer :component_selector
 
     class << self
-      def def_text_field_accessor name, options={}
+      def def_text_field name, options={}
         selector = options.fetch(:selector, name.to_s)
 
         class_eval <<-EOF
@@ -28,8 +28,8 @@ class Syma
           end
         EOF
       end
-      alias :def_password_field_accessor :def_text_field_accessor
-      alias :def_textarea_accessor :def_text_field_accessor
+      alias :def_password_field :def_text_field
+      alias :def_textarea :def_text_field
 
       def def_submitter name, options={}
         selector = options.fetch(:selector, name.to_s)
@@ -41,7 +41,7 @@ class Syma
         EOF
       end
 
-      def def_text_lookup_reader name, options={}
+      def def_text_lookup name, options={}
         selector = options.fetch(:selector, name.to_s)
         strip = options.fetch(:strip, false)
 

@@ -6,14 +6,14 @@ describe Syma do
       described_class.configure do |c|
         c.ui_driver_class :UIDriver 
         c.given_driver_class :GivenDriver 
-        c.world :World
+        c.session_driver_instance :SessionDriverInstance
       end
     end
     context "#initialize" do
       it "on initialization it has the class instance configuration" do
         subject.configuration.ui_driver_class == :UIDriver
         subject.configuration.ui_driver_class == :GivenDriver
-        subject.configuration.world == :World
+        subject.configuration.session_driver_instance == :SessionDriverInstance
       end
     end
 
@@ -27,9 +27,20 @@ describe Syma do
       it "can be configured" do
         described_class.configuration.ui_driver_class.should == :UIDriver
         described_class.configuration.given_driver_class.should == :GivenDriver
-        described_class.configuration.world.should == :World
+        described_class.configuration.session_driver_instance.should == :SessionDriverInstance
       end
     end
+  end
+
+  context "#session_driver" do
+    let(:config) { stub(:config) }
+    it "returns the instance" do
+      subject = described_class.new(config) 
+      config.should_receive(:session_driver_instance).
+        and_return(:the_instance)
+      subject.session_driver.should == :the_instance 
+    end
+      
   end
 
   context "#given_driver" do
@@ -54,7 +65,6 @@ describe Syma do
 
       subject.ui_driver.should == :ui_driver_instance
     end
-
   end
 
 end

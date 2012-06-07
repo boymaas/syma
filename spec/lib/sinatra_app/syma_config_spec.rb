@@ -3,13 +3,19 @@ require 'sinatra_app/syma_config'
 
 require 'syma/test_helpers'
 
+require 'logger'
+require 'syma/session_driver/logger'
+
 module SinatraApp
   describe "applying syma to a rack test app" do
     before :all do
+      capybara_session = Capybara::Session.new(:rack_test, SinatraApp::Simple)
+      session_driver = Syma::SessionDriver::Capybara.new(capybara_session)
+      logging_session_driver = Syma::SessionDriver::Logger.new(session_driver, ::Logger.new(STDOUT))
       Syma.configure do |c|
-        c.ui_driver_class    UIDriver
-        c.given_driver_class GivenDriver
-        c.world              Capybara::Session.new(:rack_test, SinatraApp::Simple)
+        c.ui_driver_class      UIDriver
+        c.given_driver_class   GivenDriver
+        c.session_driver_instance logging_session_driver
       end  
     end
 

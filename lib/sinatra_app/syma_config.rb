@@ -10,7 +10,7 @@ module SinatraApp
 
     def_text_field      :email, :selector => 'input#email'
     def_password_field  :password, :selector => 'input#password'
-    def_submitter                :press_sign_in, :selector => 'Sign In'
+    def_submitter       :press_sign_in, :selector => 'button'
 
     def sign_in(user_data)
       email    user_data[:email]
@@ -73,7 +73,7 @@ module SinatraApp
     end
 
     def choose_to_delete_widget(widget_data)
-      find("#delete_#{widget_data.fetch(:id)}").click_button('Delete')
+      click_on("#delete_#{widget_data.fetch(:id)} button")
     end
 
     private

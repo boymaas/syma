@@ -1,5 +1,5 @@
 require 'syma/ui_component_factory_method'
-require 'syma/ui_world_forwardable'
+require 'syma/ui_session_driver_forwardable'
 require 'syma/ui_helpers'
 require 'syma/attr_initializer'
 
@@ -9,7 +9,7 @@ class Syma
 
     include UiComponentFactoryMethod
     include UiHelpers
-    include UiWorldForwardable
+    include UiSessionDriverForwardable
     include AttrInitializer
 
     attr_initializer :component_path
@@ -22,9 +22,9 @@ class Syma
         class_eval <<-EOF
           def #{name} v=nil
             unless v.nil?
-              find('#{selector}').set(v)
+              find_form_field('#{selector}').set_value(v)
             end
-            find('#{selector}').text
+            find_form_field('#{selector}').get_value
           end
         EOF
       end
@@ -34,23 +34,19 @@ class Syma
       def def_submitter name, options={}
         selector = options.fetch(:selector, name.to_s)
 
-        class_eval <<-EOF
-          def #{name} v=nil
-            click_button('#{selector}')
-          end
-        EOF
+        define_method name do
+          click_on(selector)  
+        end
       end
 
       def def_text_lookup name, options={}
         selector = options.fetch(:selector, name.to_s)
         strip = options.fetch(:strip, false)
 
-        class_eval <<-EOF
-          def #{name}
-            v = find('#{selector}').text
-            #{strip ? 'v.strip' : 'v'}
-          end
-        EOF
+        define_method name do
+          v = find_text(selector)
+          strip ? v.strip : v
+        end
       end
     end
 
@@ -63,7 +59,7 @@ class Syma
     end
 
     def visible?
-      !!world.find(component_selector)
+      !!find_element(component_selector)
     end
 
   end

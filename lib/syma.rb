@@ -1,5 +1,6 @@
 require "syma/ui_driver"
 require "syma/given_driver"
+require "syma/session_driver/capybara"
 require "syma/ui_component"
 require "syma/mental_model"
 require "syma/attr_accessor_f"
@@ -30,6 +31,10 @@ class Syma
     @given_driver ||= configuration.instantiate_given_driver_class
   end
 
+  def session_driver
+    configuration.session_driver_instance
+  end
+
   def mental_model
     @mental_model ||= configuration.mental_model
   end
@@ -42,11 +47,11 @@ class Syma
 
     extend AttrAccessorF
 
-    attr_accessor_f :world
     attr_accessor_f :mental_model
 
     attr_accessor_f :ui_driver_class
     attr_accessor_f :given_driver_class
+    attr_accessor_f :session_driver_instance
 
     def instantiate_ui_driver_class
       ui_driver_class.new(self)

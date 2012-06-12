@@ -58,8 +58,9 @@ class Syma
       configuration.mental_model
     end
 
+
     def visible?
-      !!find_element(component_selector)
+      !!session_driver.find_element(component_selector)
     end
 
   end

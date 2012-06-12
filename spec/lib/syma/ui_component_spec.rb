@@ -2,14 +2,14 @@ require 'syma/ui_component'
 
 class Syma
   describe UIComponent do
-    let(:world) { stub(:world) }
-    let(:config) { stub(:config, :world => world) }
+    let(:session_driver) { stub(:session_driver) }
+    let(:config) { stub(:config, :session_driver_instance => session_driver) }
 
     subject { described_class.new(config) }
 
     context "#initialize" do
-      it "sets the world" do
-        subject.world.should == world
+      it "sets the session_driver_instance" do
+        subject.session_driver.should == session_driver
 
       end
     end
@@ -24,9 +24,9 @@ class Syma
     end
 
     context "#visible?" do
-      it "delegates to world find" do
+      it "delegates to session driver" do
         subject.stub(:component_selector => :component_selector)
-        world.should_receive(:find).with(:component_selector).
+        session_driver.should_receive(:find_element).with(:component_selector).
           and_return(nil)
 
         subject.visible?.should == false

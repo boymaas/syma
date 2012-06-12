@@ -5,11 +5,11 @@ class Syma
         attr_reader :scope
 
         def find_element selector
-          maybe_limit_scope { caps.find(selector) }
+          caps.find(selector) 
         end
 
         def find_text selector
-          maybe_limit_scope { caps.find(selector).text }
+          caps.find(selector).text 
         end
 
         def find_form_field selector
@@ -17,16 +17,12 @@ class Syma
         end
 
         def click_on selector
-          maybe_limit_scope { caps.find(selector).click }
+          caps.find(selector).click
         end
         alias :click_button :click_on
 
         def within(selector, &block) 
           caps.within(selector, &block)
-        end
-
-        def maybe_limit_scope &block
-          scope ? caps.within(scope, &block) : block.call
         end
       end
     end

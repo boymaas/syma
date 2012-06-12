@@ -15,7 +15,8 @@ module SinatraApp
       Syma.configure do |c|
         c.ui_driver_class      UIDriver
         c.given_driver_class   GivenDriver
-        c.session_driver_instance logging_session_driver
+        c.session_driver_instance session_driver
+        # c.session_driver_instance logging_session_driver
       end  
     end
 

@@ -20,10 +20,10 @@ class Syma
       end
     end
 
-    def method_missing(m,*a)
+    def method_missing(m,*a,&block)
       if session_driver.respond_to?(m)
         session_driver.within(component_selector) do
-          return session_driver.send(m, *a)
+          return session_driver.send(m, *a, &block)
         end
       end
       super

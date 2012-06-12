@@ -20,9 +20,8 @@ class Syma
       class Element
         include Interface
 
-        def initialize(capy_session, selector)
+        def initialize(capy_session)
           @capy_session = capy_session 
-          @scope = selector
         end
 
         def caps

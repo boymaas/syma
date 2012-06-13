@@ -16,14 +16,32 @@ class Syma
       true
     end
 
-    class Collection < SimpleDelegator
+    class Collection 
+      attr_reader :data
+
       def initialize(name, init_data = nil)
         @name = name
-        data = Hash.new do |hash, key|
+        @data = Hash.new do |hash, key|
           raise UnknownKeyError, "Can't find mental_model.#{@name}[#{key.inspect}]. Did you forget to set it?"
         end
         data.merge!(init_data) unless init_data.nil?
         super(data)
+      end
+
+      def [](k)
+        data[k]
+      end
+
+      def []=(k,v)
+        data[k] = v
+      end
+      
+      def keys
+        data.keys
+      end
+
+      def values_at(*a)
+        a.map {|k| data[k]} 
       end
 
       def ===(other)
@@ -43,7 +61,7 @@ class Syma
 
       def delete(key, &block)
         self[key] # simple fetch to possibly trigger UnknownKeyError
-        deleted[key] = super
+        deleted[key] = data.delete(key, &block)
       end
 
       def deleted
@@ -52,11 +70,11 @@ class Syma
 
       def delete_if(&block)
         move = lambda { |k,v| deleted[k] = v; true }
-        super { |k,v| block.call(k,v) && move.call(k,v) }
+        data.delete_if { |k,v| block.call(k,v) && move.call(k,v) }
       end
 
       def dup
-        new_data = {}.merge(self)
+        new_data = {}.merge(self.data)
         new_data = Marshal.load(Marshal.dump(new_data))
         self.class.new(@name, new_data)
       end

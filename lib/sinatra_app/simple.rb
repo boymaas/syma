@@ -2,7 +2,6 @@ require 'capybara'
 
 # These are required for the Rack app used for testing
 require 'sinatra/base'
-require 'json'
 
 module SinatraApp
   class Simple < Sinatra::Base

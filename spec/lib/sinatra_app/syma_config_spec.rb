@@ -57,6 +57,26 @@ module SinatraApp
             should == mental_model.widgets.values_at(:widget_a, :widget_b)
         end
       end
+
+      context "given: accessing ui components which are not visible" do
+        it "gives meaningfull error messages" do
+          ui.navigate_to ui.sign_in_screen
+
+          expect {
+            ui.widget_screen.last_widget_created
+          }.to raise_error { |error|
+            error.should be_an(Syma::SessionDriver::ElementNotFound)
+            error.message.should include %{error message                : [Unable to find css "#widget_list"]}
+            error.message.should include %{session_driver.current_path  : [/session/new]}
+            error.message.should include %{ui_component class           : [SinatraApp::WidgetScreen]}
+            error.message.should include %{calling function             : [in `last_widget_created']}
+          }
+        end
+        it "just for displaying uncomment" do
+#         ui.navigate_to ui.sign_in_screen
+#         ui.widget_screen.last_widget_created
+        end
+      end
     end
   end
 

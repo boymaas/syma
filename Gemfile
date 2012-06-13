@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'patron'
+gem 'colorize'
 
 group :development, :test do
   gem 'sinatra'

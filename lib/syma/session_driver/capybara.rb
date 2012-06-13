@@ -15,8 +15,8 @@ class Syma
         if @interface.respond_to?(m)
           begin
             return @interface.send(m, *a, &block)
-          rescue ::Capybara::ElementNotFound
-            raise ElementNotFound
+          rescue ::Capybara::ElementNotFound => e
+            raise ElementNotFound, e.message
           end
           super
         end

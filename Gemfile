@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'patron'
 gem 'colorize'
 
 group :development, :test do
@@ -9,7 +8,7 @@ group :development, :test do
   gem 'json_pure'
   gem 'rspec'
   gem 'pry'
-  gem 'ruby-debug'
+  gem 'ruby-debug' if RUBY_VERSION.match(/^1\.8/)
   gem 'hpricot'
   gem 'haml'
 end

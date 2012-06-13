@@ -20,7 +20,8 @@ Looking around for other implementations of this pattern I found
 
 ## Overview
 
-![Syma overview image](https://github.com/boymaas/syma/gfx/syma-overview.jpg)
+![Syma overview image](https://github.com/boymaas/syma/raw/master/gfx/syma-overview.jpg)
+                      
 
 ## Configuration
 
@@ -33,8 +34,8 @@ Looking around for other implementations of this pattern I found
       c.session_driver_instance SessionDriver
     end  
 
-For an example configuration on a sinatra app see: `spec/lib/sinatra_app/syma_config_spec.rb' 
-and `spec/lib/sinatra_app/simple_spec.rb'
+For an example configuration on a sinatra app see: `spec/lib/sinatra_app/syma_config_spec.rb` 
+and `spec/lib/sinatra_app/simple_spec.rb`.
 
 
 ## Installation

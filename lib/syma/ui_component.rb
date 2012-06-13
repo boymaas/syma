@@ -1,5 +1,5 @@
 require 'syma/ui_component_factory_method'
-require 'syma/ui_world_forwardable'
+require 'syma/ui_session_driver_forwardable'
 require 'syma/ui_helpers'
 require 'syma/attr_initializer'
 
@@ -9,48 +9,44 @@ class Syma
 
     include UiComponentFactoryMethod
     include UiHelpers
-    include UiWorldForwardable
+    include UiSessionDriverForwardable
     include AttrInitializer
 
     attr_initializer :component_path
     attr_initializer :component_selector
 
     class << self
-      def def_text_field_accessor name, options={}
+      def def_text_field name, options={}
         selector = options.fetch(:selector, name.to_s)
 
-        class_eval <<-EOF
+        class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name} v=nil
             unless v.nil?
-              find('#{selector}').set(v)
+              find_form_field('#{selector}').set_value(v)
             end
-            find('#{selector}').text
+            find_form_field('#{selector}').get_value
           end
         EOF
       end
-      alias :def_password_field_accessor :def_text_field_accessor
-      alias :def_textarea_accessor :def_text_field_accessor
+      alias :def_password_field :def_text_field
+      alias :def_textarea :def_text_field
 
       def def_submitter name, options={}
         selector = options.fetch(:selector, name.to_s)
 
-        class_eval <<-EOF
-          def #{name} v=nil
-            click_button('#{selector}')
-          end
-        EOF
+        define_method name do
+          click_on(selector)  
+        end
       end
 
-      def def_text_lookup_reader name, options={}
+      def def_text_lookup name, options={}
         selector = options.fetch(:selector, name.to_s)
         strip = options.fetch(:strip, false)
 
-        class_eval <<-EOF
-          def #{name}
-            v = find('#{selector}').text
-            #{strip ? 'v.strip' : 'v'}
-          end
-        EOF
+        define_method name do
+          v = find_text(selector)
+          strip ? v.strip : v
+        end
       end
     end
 
@@ -62,8 +58,9 @@ class Syma
       configuration.mental_model
     end
 
+
     def visible?
-      !!world.find(component_selector)
+      !!session_driver.find_element(component_selector)
     end
 
   end

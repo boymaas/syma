@@ -1,7 +1,7 @@
 class Syma
   module UiHelpers
     def go_to ui_component, &block
-      world.visit ui_component.component_path
+      session_driver.navigate_to ui_component.component_path
 
       return if block.nil?
 

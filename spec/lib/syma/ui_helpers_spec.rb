@@ -2,27 +2,27 @@ require 'syma/ui_helpers'
 
 class Syma
   describe UiHelpers do
-    let(:world) {stub(:world)}
+    let(:session_driver) {stub(:session_driver)}
     before do
       ClassWithUiHelpers = Class.new do
         include UiHelpers
 
-        attr_reader :world
+        attr_reader :session_driver
 
-        def initialize world
-          @world = world
+        def initialize session_driver
+          @session_driver = session_driver
         end
       end
     end
 
     after { Syma.send(:remove_const, :ClassWithUiHelpers) }
 
-    subject {ClassWithUiHelpers.new(world)}
+    subject {ClassWithUiHelpers.new(session_driver)}
 
     context "#go_to" do
       let(:ui_component) { stub(:ui_component) }
       before do
-        world.should_receive(:visit)
+        session_driver.should_receive(:navigate_to)
         ui_component.should_receive(:component_path)
       end
       it "takes a navigates to the component_path" do

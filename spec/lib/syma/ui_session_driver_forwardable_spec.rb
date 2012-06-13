@@ -3,10 +3,12 @@ require 'syma/ui_session_driver_forwardable'
 class Syma
   describe UiSessionDriverForwardable do
     before do
-      ForwardableClass = Class.new do
+      Object::ForwardableClass = Class.new do
         include UiSessionDriverForwardable
       end
     end
+
+    after {Object.send :remove_const, :ForwardableClass }
 
     subject {ForwardableClass.new}
 

@@ -14,7 +14,6 @@ class Syma
         TmpClass = Class.new(UIDriver) do
           ui_component :label, :Class 
         end
-        
       end
     end
 

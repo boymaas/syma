@@ -3,13 +3,15 @@ require 'syma/attr_initializer'
 class Syma
   describe AttrInitializer do
     before do
-      TestClass = Class.new do
+      Object::TestClass = Class.new do
         include AttrInitializer
 
         attr_initializer :component_path
         attr_initializer :component_selector
       end
     end
+
+    after { Object.send(:remove_const, :TestClass) }
 
     context ".component_{path,selector}" do
       context "given: configured using scalars" do

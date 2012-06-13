@@ -58,12 +58,6 @@ class Syma
         def within(selector, &block) 
           caps.within(selector, &block)
         end
-
-        def reraise_element_not_found
-          yield
-        rescue ::Capybara::ElementNotFound
-          raise ElementNotFound
-        end
       end
     end
   end

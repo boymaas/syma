@@ -7,6 +7,7 @@ class Syma
 
     subject { described_class.new(config) }
 
+
     context "#initialize" do
       it "sets the session_driver_instance" do
         subject.session_driver.should == session_driver
@@ -16,11 +17,11 @@ class Syma
 
     context ".ui_component" do
       it "is present, tested at module" do
-        TmpClass = Class.new(UIComponent) do
+        Object::TmpClass = Class.new(UIComponent) do
           ui_component :label, :Class 
         end
-
       end
+      after { Object.send(:remove_const, :TmpClass) }
     end
 
     context "#visible?" do

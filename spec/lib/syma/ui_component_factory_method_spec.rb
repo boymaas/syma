@@ -4,10 +4,11 @@ class Syma
   describe UiComponentFactoryMethod do
     context ".ui_component" do
       before do
-        TmpClass = Class.new do
+        Object::TmpClass = Class.new do
           include UiComponentFactoryMethod        
         end
       end
+      after { Object.send(:remove_const, :TmpClass) }
       context "component factory method" do
         it "returns the ui_component_class" do
           ui_component_class =  mock(Class) 

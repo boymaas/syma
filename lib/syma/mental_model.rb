@@ -25,7 +25,6 @@ class Syma
           raise UnknownKeyError, "Can't find mental_model.#{@name}[#{key.inspect}]. Did you forget to set it?"
         end
         data.merge!(init_data) unless init_data.nil?
-        super(data)
       end
 
       def [](k)

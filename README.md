@@ -1,4 +1,4 @@
-# Syma
+# Syma [![Build Status](https://secure.travis-ci.org/boymaas/syma.png)](http://travis-ci.org/boymaas/syma) [![Dependency Status](https://gemnasium.com/boymaas/syma.png)](https://gemnasium.com/boymaas/syma)
 
 Syma is a minimal implementation of the WindowDriver pattern as described on
 (Martin Fowlers domain)[http://martinfowler.com/eaaDev/WindowDriver.html]

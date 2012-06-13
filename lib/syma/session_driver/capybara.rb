@@ -1,51 +1,59 @@
-require 'syma/session_driver/capybara/interface'
+require 'syma/basic_object'
 
 class Syma
   module SessionDriver
-    class Capybara
-      include Interface
-
-      def initialize(capy_session)
-        @capy_session = capy_session
+    class CapybaraExceptionTranslator < BasicObject
+      def initialize(interface)
+        @interface = interface
       end
 
-      def caps
-        @capy_session
+       def respond_to?(m, *a)
+         @interface.respond_to?(m) || super
+       end
+
+      def method_missing(m, *a, &block)
+        if @interface.respond_to?(m)
+          begin
+            return @interface.send(m, *a, &block)
+          rescue ::Capybara::ElementNotFound
+            raise ElementNotFound
+          end
+          super
+        end
+      end
+    end
+
+    class Capybara  < DelegateClass(CapybaraExceptionTranslator)
+      require 'syma/session_driver/capybara/interface'
+
+      def initialize(capy_session)
+        @interface = Interface.new(capy_session)
+        @interface = CapybaraExceptionTranslator.new(@interface)
+        super(@interface)
       end
 
       def navigate_to path
-        caps.visit(path)
+        @interface.caps.visit(path)
       end
 
-      class Element
-        include Interface
-
-        def initialize(capy_session)
-          @capy_session = capy_session 
+      class Element < Interface
+        def tag_name
+          caps.tag_name
         end
 
-        def caps
-          @capy_session
+        def path
+          caps.path
         end
       end
 
-      class InputField
-        def initialize(capy_session, selector)
-          @capy_session = capy_session
-          @selector = selector
-        end
-
-        def caps
-          @capy_session
-        end
-
+      class InputField < Element
         # getValue
         def get_value
-          caps.find(@selector).value
+          element.value
         end
         # setValue
         def set_value v
-          caps.find(@selector).set(v)
+          element.set(v)
         end
       end
     end

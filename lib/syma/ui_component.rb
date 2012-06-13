@@ -19,7 +19,7 @@ class Syma
       def def_text_field name, options={}
         selector = options.fetch(:selector, name.to_s)
 
-        class_eval <<-EOF
+        class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name} v=nil
             unless v.nil?
               find_form_field('#{selector}').set_value(v)

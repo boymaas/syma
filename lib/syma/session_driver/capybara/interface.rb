@@ -1,20 +1,32 @@
+require 'syma/session_driver/exceptions'
+
 class Syma
   module SessionDriver
     class Capybara
-      module Interface
-        attr_reader :scope
+      class Interface
+        def initialize(capy_session)
+          @capy_session = capy_session
+        end
+
+        def caps
+          @capy_session
+        end
+        alias :element :caps
 
         def each_element_matching selector, &block
           raise ArgumentError, "each element in needs a block" if block.nil?
+          caps.find(selector) # just to raise an error
           index = 0
+          ret = []
           caps.all(selector).map do |el|
             if block.arity > 1
-              block.call(Element.new(el), index)
+              ret << block.call(Element.new(el), index)
               index += 1
             else
-              block.call(Element.new(el))
+              ret << block.call(Element.new(el))
             end
           end
+          ret
         end
 
         def find_element selector
@@ -26,7 +38,7 @@ class Syma
         end
 
         def find_form_field selector
-          InputField.new(caps, selector)
+          InputField.new(caps.find(selector))
         end
 
         def fill_form_field selector, value
@@ -41,6 +53,12 @@ class Syma
 
         def within(selector, &block) 
           caps.within(selector, &block)
+        end
+
+        def reraise_element_not_found
+          yield
+        rescue ::Capybara::ElementNotFound
+          raise ElementNotFound
         end
       end
     end

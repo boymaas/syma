@@ -13,6 +13,10 @@ class Syma
         end
         alias :element :caps
 
+        def current_path
+          caps.current_path
+        end
+
         def each_element_matching selector, &block
           raise ArgumentError, "each element in needs a block" if block.nil?
           caps.find(selector) # just to raise an error

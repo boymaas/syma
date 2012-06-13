@@ -51,7 +51,7 @@ class Syma
             message << "Suggestion: are you on the correct path?".white
           end
           message << "error message                : [%s]".red % (e.message)
-          message << "session_driver.current_path  : [%s]".blue % (session_driver.caps.current_path || :not_specified )
+          message << "session_driver.current_path  : [%s]".blue % (session_driver.current_path || :not_specified )
           message << "ui_component class           : [%s]".blue % (self.class )
           message << "ui_component selector        : [%s]".blue % (self.component_selector || :not_specified )
           message << "ui_component path            : [%s]".blue % (self.component_path || :not_specified )

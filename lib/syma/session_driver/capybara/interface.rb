@@ -49,7 +49,6 @@ class Syma
           find_form_field(selector).set_value(value)
         end
 
-
         def click_on selector
           caps.find(selector).click
         end

@@ -1,5 +1,4 @@
 require 'syma/session_driver/capybara/interface'
-require 'syma/basic_object'
 
 class Syma
   module SessionDriver

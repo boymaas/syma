@@ -1,4 +1,4 @@
-require 'lib/syma'
+require 'syma'
 
 describe Syma do
   context "class methods and configuration" do

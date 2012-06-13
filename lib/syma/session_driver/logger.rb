@@ -1,4 +1,4 @@
-require 'lib/syma/basic_object'
+require 'syma/basic_object' if RUBY_VERSION =~ /^1\.8/
 
 class Syma
   module SessionDriver 

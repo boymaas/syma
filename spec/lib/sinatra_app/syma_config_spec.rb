@@ -69,7 +69,7 @@ module SinatraApp
             error.message.should include %{error message                : [Unable to find css "#widget_list"]}
             error.message.should include %{session_driver.current_path  : [/session/new]}
             error.message.should include %{ui_component class           : [SinatraApp::WidgetScreen]}
-            error.message.should include %{calling function             : [in `last_widget_created']}
+#           error.message.should include %{calling function             : [in `last_widget_created']}
           }
         end
         it "just for displaying uncomment" do

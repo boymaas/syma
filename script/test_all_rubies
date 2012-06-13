@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"  
+
+
+install_and_run_with() {
+  rvm use $1@syma --create
+  bundle
+  ./script/test_all
+}
+
+install_and_run_with "1.8.7" 
+install_and_run_with "1.9.2" 
+install_and_run_with "1.9.3" 

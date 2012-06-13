@@ -7,7 +7,7 @@ class Syma
 
       if block.arity == 1
         block.call(ui_component)
-      elsif block.arity == -1
+      elsif block.arity <= 0 # ruby 1.9 gives 0 and 1.8.7 gives -1 on 0 params
         ui_component.instance_eval &block
       else
         raise ArgumentError, "block takes either 1 or 0 parameters"

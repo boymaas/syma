@@ -1,14 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'colorize'
 
-group :development, :test do
+group :development do
+  gem 'ruby-debug' if RUBY_VERSION.match(/^1\.8/)
+end
+
+group  :test do
   gem 'sinatra'
-  gem 'capybara'
-  gem 'json_pure'
   gem 'rspec'
   gem 'pry'
-  gem 'ruby-debug' if RUBY_VERSION.match(/^1\.8/)
   gem 'hpricot'
   gem 'haml'
 end

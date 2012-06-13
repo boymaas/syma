@@ -1,4 +1,3 @@
-require 'syma/basic_object'
 require 'colorize'
 
 class Syma

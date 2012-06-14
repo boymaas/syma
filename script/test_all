@@ -2,10 +2,11 @@
 
 set -e
 
-rspec spec
+echo "Running all"
+bundle exec rspec spec --format documentation 
 
 for file in `find spec -iname '*_spec.rb'`; do
   echo "Running $file"
-  rspec $file
+  bundle exec rspec $file 
 done
 

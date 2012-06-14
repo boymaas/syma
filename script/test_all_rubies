@@ -1,21 +1,55 @@
 #!/bin/bash
 
+source script/colored_echo.sh
+
 set -e
 
-install_and_run_with() {
-  source $(rvm $1@syma --create do rvm env --path)
-  bundle
-  ./script/test_all
+function install_and_run_with() {
+  ruby_version="$1"
+  rvm_gemset="${ruby_version}@syma"
+
+  source $(rvm $rvm_gemset --create do rvm env --path) 
+
+  (rvm current | grep -q $ruby_version)
+  if [ "$?" -ne "0" ]; then 
+    echo "Problem setting up rvm environment for $rvm_gemset" 
+    return 0
+  fi
+
+
+  colored_echo $bldblu "In rvm environment $bldred$(rvm current)"
+  colored_echo $bldblu "Cleaning gemset and installing bundle"
+  rvm gemset clear $rvm_gemset
+  bundle --quiet 
+  test_all
 }
 
-if [ -n $1 ] ; then
-  install_and_run_with $1
-  return 0
+function test_all() {
+  bundle exec rspec spec 1>/dev/null
+
+  for file in `find spec -iname '*_spec.rb'`; do
+    echo "Running $file"
+    bundle exec rspec $file 
+  done
+}
+
+if [ "$1" == "all" ]; then
+  colored_echo $bldred "Executing tests on single ruby environment $1"
+
+  install_and_run_with "rbx-18mode" 
+  install_and_run_with "rbx-19mode" 
+  install_and_run_with "1.8.7" 
+  install_and_run_with "1.9.2" 
+  install_and_run_with "1.9.3" 
+  install_and_run_with "ree" 
+  install_and_run_with "jruby" 
 fi
 
-install_and_run_with "1.8.7" 
-install_and_run_with "1.9.2" 
-install_and_run_with "1.9.3" 
-install_and_run_with "ree" 
-install_and_run_with "jruby" 
+if [ -n "$1" ] ; then
+  colored_echo $bldred "Executing test on single ruby environment $1"
 
+  install_and_run_with $1
+  exit 0
+fi
+
+test_all

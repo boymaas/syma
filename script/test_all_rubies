@@ -2,15 +2,20 @@
 
 set -e
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"  
-
-
 install_and_run_with() {
-  rvm use $1@syma --create
+  source $(rvm $1@syma --create do rvm env --path)
   bundle
   ./script/test_all
 }
 
+if [ -n $1 ] ; then
+  install_and_run_with $1
+  return 0
+fi
+
 install_and_run_with "1.8.7" 
 install_and_run_with "1.9.2" 
 install_and_run_with "1.9.3" 
+install_and_run_with "ree" 
+install_and_run_with "jruby" 
+

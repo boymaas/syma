@@ -1,8 +1,15 @@
 #!/bin/bash
 
+relevant_ruby_versions=(1.9.2 1.9.3 ree jruby 1.8.7)
+
 source script/colored_echo.sh
 
 set -e
+
+function install_ruby_environment() {
+  ruby_version="$1"
+  rvm install $ruby_version
+}
 
 function install_and_run_with() {
   ruby_version="$1"
@@ -20,7 +27,8 @@ function install_and_run_with() {
   colored_echo $bldblu "In rvm environment $bldred$(rvm current)"
   colored_echo $bldblu "Cleaning gemset and installing bundle"
   rvm gemset clear $rvm_gemset
-  bundle --quiet 
+  gem install bundler --pre
+  bundle 
   test_all
 }
 
@@ -33,16 +41,25 @@ function test_all() {
   done
 }
 
+if [ "$1" == "prepare" ]; then
+  colored_echo $bldred "Installing ruby environment $1"
+
+  for ruby_version in "${relevant_ruby_versions[@]}"
+  do
+    install_ruby_environment $ruby_version
+  done
+  exit 0
+fi
+
+
 if [ "$1" == "all" ]; then
   colored_echo $bldred "Executing tests on single ruby environment $1"
 
-  install_and_run_with "rbx-18mode" 
-  install_and_run_with "rbx-19mode" 
-  install_and_run_with "1.8.7" 
-  install_and_run_with "1.9.2" 
-  install_and_run_with "1.9.3" 
-  install_and_run_with "ree" 
-  install_and_run_with "jruby" 
+  for ruby_version in "${relevant_ruby_versions[@]}"
+  do
+    install_and_run_with $ruby_version
+  done
+  exit 0
 fi
 
 if [ -n "$1" ] ; then
